@@ -67,8 +67,23 @@
                     </h2>
                     
 
-                    <div class="word-cloud-container">
-                        <div id="word-cloud"></div>
+                    <div class="next-meeting-container">
+                        <div class="next-meeting-card">
+                            <div class="meeting-header">
+                                <h3>Next Meeting</h3>
+                                <span class="meeting-tag upcoming">Upcoming</span>
+                            </div>
+                            <div class="meeting-details">
+                                <p><strong>Date:</strong> <span id="next-date">Loading...</span></p>
+                                <p><strong>Presenter:</strong> <span id="next-presenter">Loading...</span></p>
+                                <p><strong>Title:</strong> <span id="next-title">Loading...</span></p>
+                                <p><strong>Conference:</strong> <span id="next-conference">Loading...</span></p>
+                                <p><strong>Location:</strong> SEU Computer Science Building, Room 301</p>
+                                <a href="#" id="next-paper-link" class="material-link" target="_blank">
+                                    <i class="fas fa-file-pdf"></i> View Paper
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="filter-options">
@@ -162,11 +177,22 @@
                 .catch(error => {
                     showError('加载会议数据时出错: ' + error.message);
                 });
+                .then(csvText => {
+                    try {
+                        meetings = parseCSV(csvText);
+                        renderArchiveTable();
+                        renderNextMeeting(); // 添加这行
+                    } catch (error) {
+                        showError('解析CSV文件时出错: ' + error.message);
+                    }
+                })
         }
 
         // Parse CSV text to array of objects
         function parseCSV(csvText) {
+
             const lines = csvText.split('\n').filter(line => line.trim());
+
             if (lines.length < 2) {
                 throw new Error('CSV文件内容不足');
             }
@@ -197,7 +223,37 @@
             return result;
         }
 
-
+        // 添加renderNextMeeting函数
+        function renderNextMeeting() {
+            if (meetings.length === 0) return;
+            
+            // 找到日期最晚的会议
+            const nextMeeting = meetings.reduce((latest, current) => {
+                const currentDate = new Date(current.Date);
+                const latestDate = new Date(latest.Date);
+                return currentDate > latestDate ? current : latest;
+            }, meetings[0]);
+            
+            // 更新DOM元素
+            const date = new Date(nextMeeting.Date);
+            const formattedDate = date.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            
+            document.getElementById('next-date').textContent = formattedDate;
+            document.getElementById('next-presenter').textContent = nextMeeting.Presenter || '';
+            document.getElementById('next-title').textContent = nextMeeting.Title || '';
+            document.getElementById('next-conference').textContent = nextMeeting.Conference || '';
+            
+            const paperLink = document.getElementById('next-paper-link');
+            if (nextMeeting['Paper Link']) {
+                paperLink.href = nextMeeting['Paper Link'];
+            } else {
+                paperLink.style.display = 'none';
+            }
+        }
         // Render meeting archive table
         function renderArchiveTable() {
             if (meetings.length === 0) {
@@ -296,6 +352,8 @@
                 </tr>
             `;
         }
+
+
     </script>
 </body>
 </html>
