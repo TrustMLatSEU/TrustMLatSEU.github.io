@@ -28,21 +28,20 @@
                 <aside class="sidebar">
                     <div class="about-section">
                         <h2 class="section-title">About Our Group</h2>
-                        
-                        <h3 class="about-subtitle">Group Introduction</h3>
                         <div class="about-content">
-                            <p>We are a research team focused on Trustworthy Machine Learning, led by Professor Wang. Our group is part of the School of Computer Science and Engineering at Southeast University.</p>
-                            <p>Our mission is to advance the field of machine learning by developing methods that are robust, fair, transparent, and privacy-preserving.</p>
-                        </div>
+                            <p>We are a research team focused on Trustworthy Machine Learning, led by Deng-Bao Wang. Our group is part of the School of Computer Science and Engineering at Southeast University and PALM Lab.</p>
+                            <p>We are particularly focused on uncertainty quantification in large-scale and multimodal models:</p>
+                            </div>
                         
-                        <h3 class="about-subtitle">Research Areas</h3>
+                        <h3 class="about-subtitle">Related Topics</h3>
                         <ul class="research-areas">
-                            <li>Robust and Adversarial ML</li>
-                            <li>Fairness and Bias Mitigation</li>
-                            <li>Explainable AI and Interpretability</li>
-                            <li>Privacy-Preserving ML</li>
-                            <li>Ethical AI Development</li>
-                        </ul>
+                            <li>Uncertainty Calibration for Modern Deep Learning</li>
+                                <li>Uncertainty Evaluation of Large Language Models</li>
+                                <li>Out-of-Distribution Performance Prediction</li>
+                                <li>Uncertainty in Multimodal Foundation Models</li>
+                                <li>Uncertainty Quantification in Embodied AI Systems</li>
+                                <li>Trustworthy AI for Real-World Applications</li>
+                            </ul>
                         
                         <div class="tutorial-section">
                             <h3><i class="fas fa-info-circle"></i> How to update meeting data?</h3>
@@ -51,22 +50,21 @@
                                 <li>Add new meetings following the format</li>
                                 <li>Changes will be visible after refresh</li>
                                 <li>Contact admin for editing permissions</li>
-                            </ul>
                         </div>
                     </div>
                 </aside>
                 
                 <main class="content-area">
-                    <h2 class="section-title">Upcoming Meeting  <span id="next-date">Loading...</span></h2>
+                    <h2 class="section-title">Upcoming Presentation  <span id="next-date">Loading...</span></h2>
                         <div class="next-meeting-card">
                                 <p><strong>Title:</strong> <a href="#" id="next-paper-link"><span id="next-title">Loading...</span></a></p>
                                 <p><strong>Conference:</strong> <span id="next-conference">Loading...</span></p>
                                 <p><strong>Presenter:</strong> <span id="next-presenter">Loading...</span></p>
-                                <p></p>
-                                <p><strong>Location:</strong> SEU Computer Science Building, Room 413 &nbsp;&nbsp; Tencent Meeting ID: #000 000 000</p>
+                                <p><strong>Location:</strong> SEU Computer Science Building, Room 413</p>
+                                <p><strong>Tencent Meeting ID:</strong> <a href="https://meeting.tencent.com/dm/zy7FLyzPJmUT">#522-1446-6679</a> </p>
                         </div>
 
-                    <h2 class="section-title">Meeting Archive
+                    <h2 class="section-title">Presentation Archive
                         <div class="filter-options">
                             <select id="sort-select">
                                 <option value="date-desc">Sort by Date (Newest First)</option>
@@ -85,14 +83,40 @@
                                 <th>Presenter</th>
                                 <th>Title</th>
                                 <th>Conference</th>
-                                <th>Year</th>
-                                <th>Paper Link</th>
+                                <th>Download</th>
                             </tr>
                         </thead>
                         <tbody id="archive-table-body">
                             <!-- Data will be populated by JavaScript -->
                         </tbody>
                     </table>
+                      <div class="pagination-controls">
+                        <div class="pagination-buttons">
+                            <button id="first-page" class="pagination-btn" title="First Page">
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            <button id="prev-page" class="pagination-btn" title="Previous Page">
+                                <i class="fas fa-angle-left"></i>
+                            </button>
+                            <span id="page-info" class="page-info">Page 1 of 1</span>
+                            <button id="next-page" class="pagination-btn" title="Next Page">
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <button id="last-page" class="pagination-btn" title="Last Page">
+                                <i class="fas fa-angle-double-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="items-per-page">
+                            <span>Items per page:</span>
+                            <select id="items-per-page">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        </div>                              
                 </main>
             </div>
         </div>
@@ -110,6 +134,10 @@
     <script>
         // Global variable to store meeting data
         let meetings = [];
+        // 添加分页相关变量
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let filteredMeetings = [];
 
         // Page elements
         const archiveTableBody = document.getElementById('archive-table-body');
@@ -122,8 +150,43 @@
             sortSelect.addEventListener('change', renderArchiveTable);
             searchInput.addEventListener('input', renderArchiveTable);
             
+
             // Load data from server
             loadCSVData();
+        });
+
+        // 添加分页按钮事件
+        document.getElementById('first-page').addEventListener('click', () => {
+            currentPage = 1;
+            renderArchiveTable();
+        });
+        
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderArchiveTable();
+            }
+        });
+        
+        document.getElementById('next-page').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredMeetings.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderArchiveTable();
+            }
+        });
+        
+        document.getElementById('last-page').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredMeetings.length / itemsPerPage);
+            currentPage = totalPages;
+            renderArchiveTable();
+        });
+        
+        // 每页显示条目数变化事件
+        document.getElementById('items-per-page').addEventListener('change', (e) => {
+            itemsPerPage = parseInt(e.target.value);
+            currentPage = 1; // 重置到第一页
+            renderArchiveTable();
         });
 
         // Function to load CSV data from server
@@ -149,6 +212,11 @@
         2025/9/1,Deng-Bao Wang,Urania: Differentially Private Insights into AI Use.,COLM,2025,https://arxiv.org/abs/2506.04681
         2025/8/25,Alice Johnson,Robust Models Against Adversarial Attacks,ICML,2025,https://arxiv.org/abs/2505.12345
         2025/8/18,Bob Smith,Fairness in Recommender Systems,KDD,2025,https://arxiv.org/abs/2504.12345
+        2025/8/11,Carol Williams,Privacy-Preserving Federated Learning,NeurIPS,2025,https://arxiv.org/abs/2503.12345
+        2025/8/4,David Brown,Interpretable Deep Learning Models,AAAI,2025,https://arxiv.org/abs/2502.12345
+        2025/7/28,Emma Davis,Ethical Considerations in AI Deployment,FAccT,2025,https://arxiv.org/abs/2501.12345
+        2025/7/21,Frank Miller,Secure Multi-Party Computation for ML,Security,2025,https://arxiv.org/abs/2500.12345
+        2025/7/14,Grace Wilson,Transformer Models for Anomaly Detection,ICLR,2025,https://arxiv.org/abs/2499.12345
         2025/8/11,Carol Williams,Privacy-Preserving Federated Learning,NeurIPS,2025,https://arxiv.org/abs/2503.12345
         2025/8/4,David Brown,Interpretable Deep Learning Models,AAAI,2025,https://arxiv.org/abs/2502.12345
         2025/7/28,Emma Davis,Ethical Considerations in AI Deployment,FAccT,2025,https://arxiv.org/abs/2501.12345
@@ -244,7 +312,7 @@
             const sortOption = sortSelect.value;
             
             // Filter meetings
-            let filteredMeetings = meetings.filter(meeting => 
+            filteredMeetings = meetings.filter(meeting => 
                 (meeting.Presenter && meeting.Presenter.toLowerCase().includes(searchTerm)) ||
                 (meeting.Title && meeting.Title.toLowerCase().includes(searchTerm)) ||
                 (meeting.Conference && meeting.Conference.toLowerCase().includes(searchTerm))
@@ -275,12 +343,32 @@
                         </td>
                     </tr>
                 `;
+                
+                // 更新分页控件为空状态
+                updatePaginationControls(0);
                 return;
             }
             
+            // 计算总页数
+            const totalPages = Math.ceil(filteredMeetings.length / itemsPerPage);
+            
+            // 确保当前页不超过总页数
+            if (currentPage > totalPages) {
+                currentPage = totalPages > 0 ? totalPages : 1;
+            }
+            
+            // 更新分页控件
+            updatePaginationControls(totalPages);
+            
+            // 获取当前页的数据
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredMeetings.length);
+            const pageMeetings = filteredMeetings.slice(startIndex, endIndex);
+
             let tableHTML = '';
             
-            filteredMeetings.forEach(meeting => {
+            // 使用pageMeetings而不是filteredMeetings
+            pageMeetings.forEach(meeting => {
                 const date = new Date(meeting.Date);
                 const formattedDate = date.toLocaleDateString('zh-CN', {
                     year: 'numeric',
@@ -293,8 +381,7 @@
                         <td>${formattedDate}</td>
                         <td><strong>${meeting.Presenter || ''}</strong></td>
                         <td>${meeting.Title || ''}</td>
-                        <td>${meeting.Conference || ''}</td>
-                        <td>${meeting.Year || ''}</td>
+                        <td>${meeting.Conference + ' ' + meeting.Year || ''}</td>
                         <td>
                             <a href="${meeting['Paper Link']}" class="material-link" target="_blank"> &nbspSlides</a>
                         </td>
@@ -304,6 +391,20 @@
             
             archiveTableBody.innerHTML = tableHTML;
         }
+
+        // 添加分页控件更新函数
+        function updatePaginationControls(totalPages) {
+            const pageInfo = document.getElementById('page-info');
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            
+            // 更新按钮状态
+            document.getElementById('first-page').disabled = currentPage === 1;
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
+            document.getElementById('last-page').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+
         // 添加renderNextMeeting函数
         function renderNextMeeting() {
             if (meetings.length === 0) return;

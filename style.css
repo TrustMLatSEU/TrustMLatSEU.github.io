@@ -8,7 +8,12 @@
             --text-color: #333;
             --border-color: #ddd;
         }
-
+        a{
+            text-decoration: none;
+        }
+        a:hover{
+            text-decoration: none;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -23,7 +28,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1250px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -129,7 +134,7 @@
         .filter-options {
             display: flex;
             gap: 0.8rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0rem;
             flex-wrap: wrap;
         }
 
@@ -153,7 +158,7 @@
 
         .archive-table th, .archive-table td {
             padding: 0.9rem;
-            text-align: left;
+            text-align: center;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -166,7 +171,9 @@
         .archive-table tr:last-child td {
             border-bottom: none;
         }
-
+        .archive-table td:nth-child(2) {
+            width: 10rem; /* 第二列宽度 */
+        }
         .archive-table tr:hover {
             background-color: #f5f9ff;
         }
@@ -310,6 +317,7 @@
         }
 
         .research-areas {
+            font-size: 0.9rem;
             padding-left: 1.5rem;
             margin-bottom: 1.2rem;
         }
@@ -343,6 +351,15 @@
             text-align: center;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
+        .next-meeting-card {
+            flex: 1;
+            min-width: 180px;
+            background: linear-gradient(to right, #f9f9ff, #f0f5ff);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem
+        }
 
         .stat-number {
             font-size: 1.8rem;
@@ -356,8 +373,7 @@
             color: var(--dark-color);
         }
 
-        /* Word Cloud Styles */
-        .word-cloud-container {
+        .next-meeting-container {
             width: 100%;
             height: 250px;
             background: linear-gradient(to right, #f9f9ff, #f0f5ff);
@@ -371,50 +387,6 @@
             align-items: center;
         }
 
-        #word-cloud {
-            width: 100%;
-            height: 100%;
-        }
-
-        .word-cloud-title {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .word-cloud-controls {
-            display: flex;
-            justify-content: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .cloud-control-btn {
-            padding: 0.4rem 0.8rem;
-            background: var(--light-color);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .cloud-control-btn:hover {
-            background: var(--secondary-color);
-            color: white;
-            border-color: var(--secondary-color);
-        }
-
-        .cloud-control-btn.active {
-            background: var(--secondary-color);
-            color: white;
-            border-color: var(--secondary-color);
-        }
 
         @media (max-width: 768px) {
             .main-content {
@@ -441,8 +413,54 @@
                 position: relative;
                 top: 0;
             }
+        }
 
-            .word-cloud-container {
-                height: 200px;
-            }
+        /* 添加分页控件样式 */
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+        }
+        
+        .pagination-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .pagination-btn {
+            padding: 6px 12px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .page-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .items-per-page {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .items-per-page select {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
