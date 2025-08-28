@@ -18,9 +18,6 @@
                     <h1>Trustworthy Machine Learning Group</h1>
                     <p class="subtitle">Weekly Seminar Series</p>
                 </div>
-                <div class="data-info">
-                    <i class="fas fa-database"></i> Data source: meeting.csv
-                </div>
             </div>
         </div>
     </header>
@@ -60,40 +57,26 @@
                 </aside>
                 
                 <main class="content-area">
+                    <h2 class="section-title">Upcoming Meeting  <span id="next-date">Loading...</span></h2>
+                        <div class="next-meeting-card">
+                                <p><strong>Title:</strong> <a href="#" id="next-paper-link"><span id="next-title">Loading...</span></a></p>
+                                <p><strong>Conference:</strong> <span id="next-conference">Loading...</span></p>
+                                <p><strong>Presenter:</strong> <span id="next-presenter">Loading...</span></p>
+                                <p></p>
+                                <p><strong>Location:</strong> SEU Computer Science Building, Room 413 &nbsp;&nbsp; Tencent Meeting ID: #000 000 000</p>
+                        </div>
+
                     <h2 class="section-title">Meeting Archive
-                        <button class="refresh-btn" id="refresh-meetings">
-                            <i class="fas fa-sync-alt"></i> Refresh Data
-                        </button>
+                        <div class="filter-options">
+                            <select id="sort-select">
+                                <option value="date-desc">Sort by Date (Newest First)</option>
+                                <option value="date-asc">Sort by Date (Oldest First)</option>
+                                <option value="presenter">Sort by Presenter</option>
+                            </select>
+                            <input type="text" id="search-input" placeholder="Search presenter, title or conference">
+                        </div>
                     </h2>
                     
-
-                    <div class="next-meeting-container">
-                        <div class="next-meeting-card">
-                            <div class="meeting-header">
-                                <h3>Next Meeting</h3>
-                                <span class="meeting-tag upcoming">Upcoming</span>
-                            </div>
-                            <div class="meeting-details">
-                                <p><strong>Date:</strong> <span id="next-date">Loading...</span></p>
-                                <p><strong>Presenter:</strong> <span id="next-presenter">Loading...</span></p>
-                                <p><strong>Title:</strong> <span id="next-title">Loading...</span></p>
-                                <p><strong>Conference:</strong> <span id="next-conference">Loading...</span></p>
-                                <p><strong>Location:</strong> SEU Computer Science Building, Room 301</p>
-                                <a href="#" id="next-paper-link" class="material-link" target="_blank">
-                                    <i class="fas fa-file-pdf"></i> View Paper
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="filter-options">
-                        <select id="sort-select">
-                            <option value="date-desc">Sort by Date (Newest First)</option>
-                            <option value="date-asc">Sort by Date (Oldest First)</option>
-                            <option value="presenter">Sort by Presenter</option>
-                        </select>
-                        <input type="text" id="search-input" placeholder="Search presenter, title or conference">
-                    </div>
                     
                     <table class="archive-table">
                         <thead>
@@ -157,35 +140,49 @@
                 </tr>
             `;
             
+            // Simulated data - this would be replaced with actual fetch in production
+            const simulateData = false; // Set to false to use real fetch
             
-            // Fetch the CSV file from server
-            fetch('meetings.csv')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('无法加载会议数据文件');
-                    }
-                    return response.text();
-                })
-                .then(csvText => {
-                    try {
-                        meetings = parseCSV(csvText);
-                        renderArchiveTable();
-                    } catch (error) {
-                        showError('解析CSV文件时出错: ' + error.message);
-                    }
-                })
-                .catch(error => {
-                    showError('加载会议数据时出错: ' + error.message);
-                });
-                .then(csvText => {
-                    try {
-                        meetings = parseCSV(csvText);
-                        renderArchiveTable();
-                        renderNextMeeting(); // 添加这行
-                    } catch (error) {
-                        showError('解析CSV文件时出错: ' + error.message);
-                    }
-                })
+            if (simulateData) {
+                try {
+                    const csvText = `Date,Presenter,Title,Conference,Year,Paper Link
+        2025/9/1,Deng-Bao Wang,Urania: Differentially Private Insights into AI Use.,COLM,2025,https://arxiv.org/abs/2506.04681
+        2025/8/25,Alice Johnson,Robust Models Against Adversarial Attacks,ICML,2025,https://arxiv.org/abs/2505.12345
+        2025/8/18,Bob Smith,Fairness in Recommender Systems,KDD,2025,https://arxiv.org/abs/2504.12345
+        2025/8/11,Carol Williams,Privacy-Preserving Federated Learning,NeurIPS,2025,https://arxiv.org/abs/2503.12345
+        2025/8/4,David Brown,Interpretable Deep Learning Models,AAAI,2025,https://arxiv.org/abs/2502.12345
+        2025/7/28,Emma Davis,Ethical Considerations in AI Deployment,FAccT,2025,https://arxiv.org/abs/2501.12345
+        2025/7/21,Frank Miller,Secure Multi-Party Computation for ML,Security,2025,https://arxiv.org/abs/2500.12345
+        2025/7/14,Grace Wilson,Transformer Models for Anomaly Detection,ICLR,2025,https://arxiv.org/abs/2499.12345`;
+                    
+                    meetings = parseCSV(csvText);
+                    renderArchiveTable();
+                    renderNextMeeting(); // 添加这行
+                } catch (error) {
+                    showError('解析模拟CSV数据时出错: ' + error.message);
+                }
+            } else {
+                // Original fetch code for production
+                fetch('meetings.csv')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('无法加载会议数据文件');
+                        }
+                        return response.text();
+                    })
+                    .then(csvText => {
+                        try {
+                            meetings = parseCSV(csvText);
+                            renderArchiveTable();
+                            renderNextMeeting(); // 添加这行
+                        } catch (error) {
+                            showError('解析CSV文件时出错: ' + error.message);
+                        }
+                    })                
+                    .catch(error => {
+                        showError('加载会议数据时出错: ' + error.message);
+                    });
+            }
         }
 
         // Parse CSV text to array of objects
@@ -223,37 +220,7 @@
             return result;
         }
 
-        // 添加renderNextMeeting函数
-        function renderNextMeeting() {
-            if (meetings.length === 0) return;
-            
-            // 找到日期最晚的会议
-            const nextMeeting = meetings.reduce((latest, current) => {
-                const currentDate = new Date(current.Date);
-                const latestDate = new Date(latest.Date);
-                return currentDate > latestDate ? current : latest;
-            }, meetings[0]);
-            
-            // 更新DOM元素
-            const date = new Date(nextMeeting.Date);
-            const formattedDate = date.toLocaleDateString('zh-CN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-            
-            document.getElementById('next-date').textContent = formattedDate;
-            document.getElementById('next-presenter').textContent = nextMeeting.Presenter || '';
-            document.getElementById('next-title').textContent = nextMeeting.Title || '';
-            document.getElementById('next-conference').textContent = nextMeeting.Conference || '';
-            
-            const paperLink = document.getElementById('next-paper-link');
-            if (nextMeeting['Paper Link']) {
-                paperLink.href = nextMeeting['Paper Link'];
-            } else {
-                paperLink.style.display = 'none';
-            }
-        }
+
         // Render meeting archive table
         function renderArchiveTable() {
             if (meetings.length === 0) {
@@ -329,15 +296,44 @@
                         <td>${meeting.Conference || ''}</td>
                         <td>${meeting.Year || ''}</td>
                         <td>
-                            <a href="${meeting['Paper Link']}" class="material-link" target="_blank">
-                                <i class="fas fa-file-pdf"></i> 查看资料
-                            </a>
+                            <a href="${meeting['Paper Link']}" class="material-link" target="_blank"> &nbspSlides</a>
                         </td>
                     </tr>
                 `;
             });
             
             archiveTableBody.innerHTML = tableHTML;
+        }
+        // 添加renderNextMeeting函数
+        function renderNextMeeting() {
+            if (meetings.length === 0) return;
+            
+            // 找到日期最晚的会议
+            const nextMeeting = meetings.reduce((latest, current) => {
+                const currentDate = new Date(current.Date);
+                const latestDate = new Date(latest.Date);
+                return currentDate > latestDate ? current : latest;
+            }, meetings[0]);
+            
+            // 更新DOM元素
+            const date = new Date(nextMeeting.Date);
+            const formattedDate = date.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            
+            document.getElementById('next-date').textContent = formattedDate + ' 14:00';
+            document.getElementById('next-presenter').textContent = nextMeeting.Presenter || '';
+            document.getElementById('next-title').textContent = nextMeeting.Title || '';
+            document.getElementById('next-conference').textContent = nextMeeting.Conference + ' ' + nextMeeting.Year || '';
+            
+            const paperLink = document.getElementById('next-paper-link');
+            if (nextMeeting['Paper Link']) {
+                paperLink.href = nextMeeting['Paper Link'];
+            } else {
+                paperLink.style.display = 'none';
+            }
         }
 
         function showError(message) {
@@ -352,8 +348,6 @@
                 </tr>
             `;
         }
-
-
     </script>
 </body>
 </html>
