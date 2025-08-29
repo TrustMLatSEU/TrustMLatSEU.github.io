@@ -29,27 +29,26 @@
                     <div class="about-section">
                         <h2 class="section-title">About Our Group</h2>
                         <div class="about-content">
-                            <p>We are a research team focused on Trustworthy Machine Learning, led by Deng-Bao Wang. Our group is part of the School of Computer Science and Engineering and PALM Lab at Southeast University.</p>
-                            <p>We are particularly focused on uncertainty quantification in modern large models.</p>
+                            <p>We are a research team focused on trustworthy machine learning, led by Deng-Bao Wang. We are part of the PALM Lab in School of Computer Science and Engineering at Southeast University. We are particularly focused on uncertainty quantification in modern models.</p>
                             </div>
                         
                         <h3 class="about-subtitle">Related Topics</h3>
                         <ul class="research-areas">
                             <li>Uncertainty Calibration for Modern Deep Learning</li>
-                            <li>Uncertainty Evaluation of Large Language Models</li>
-                            <li>Reliable Multimodal Foundation Models</li>
-                            <li>Out-of-Distribution Performance Prediction</li>
-                            <li>Uncertainty Quantification in Embodied AI Systems</li>
-                            <li>Trustworthy AI for Science Discovery</li>
+                            <li>Uncertainty Evaluation of (Multimodal) LLMs</li>
+                            <li>Hallucination in Foundation Models</li>
+                            <li>Out-of-Distribution Accuracy Prediction</li>
+                            <li>Uncertainty Quantification in Embodied Intelligence</li>
+                            <li>Trustworthy AI for Scientific Discovery</li>
                         </ul>
                         
                         <div class="tutorial-section">
                             <h3><i class="fas fa-info-circle"></i>What papers should you share?</h3>
                             <ul>
-                                <li>Papers published within the past year, or</li>
-                                <li>highly cited or influential works, or</li>
-                                <li>writen by your favorite researchers, or</li>
-                                <li>those likely to spark discussion.</li>
+                                <li>Top conference papers from the past year, </li>
+                                <li>highly influential works (e.g., 5000+ citations), </li>
+                                <li>papers authored by your favorite researchers, </li>
+                                <li>or those likely to spark discussion.</li>
                         </div>
                         <h3 class="about-subtitle">Useful Links</h3>
                         <ul class="research-areas">
@@ -135,7 +134,7 @@
     
     <footer>
         <div class="container">
-            <p>© 2025 TrustML Group at SEU &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; Template by <a href="mailto:your-email@example.com">Deng-Bao Wang</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
+            <p>© 2025 TrustML Group at SEU &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; <!--Template by <a href="mailto:wangdb@seu.edu.cn">Deng-Bao Wang</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; -->
             <i class="fas fa-database"></i> Data source: Google Sheet &nbsp;&nbsp;<a href="https://docs.google.com/spreadsheets/d/1gzMzanZzVq2nXOSCEo3brlErXrSFua0CGHk-2El5ExE" class="view-display-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Access</a>
             </p>
         </div>
@@ -383,8 +382,8 @@
                         cacheData(meetings); // 缓存数据
                         
                         if (!silentUpdate) {
-                            renderArchiveTable();
                             renderNextMeeting();
+                            renderArchiveTable();
                         }
                     } catch (error) {
                         if (!silentUpdate) {
@@ -398,8 +397,8 @@
                         const cached = getCachedData();
                         if (cached && cached.length > 0) {
                             meetings = cached;
-                            renderArchiveTable();
                             renderNextMeeting();
+                            renderArchiveTable();
                             showWarning('无法连接到Google Sheet。显示缓存数据。');
                         } else {
                             showError('加载Google Sheet数据时出错: ' + error.message);
