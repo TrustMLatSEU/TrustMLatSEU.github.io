@@ -368,6 +368,10 @@
             margin-bottom: 1.5rem
         }
 
+        .next-meeting-card p{
+            margin-bottom: .5rem
+        }
+        
         .stat-number {
             font-size: 1.8rem;
             font-weight: bold;
