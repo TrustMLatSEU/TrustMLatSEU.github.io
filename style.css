@@ -9,6 +9,7 @@
             --border-color: #ddd;
         }
         a{
+            color: #0b57d0;
             text-decoration: none;
         }
         a:hover{

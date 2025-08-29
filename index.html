@@ -63,7 +63,7 @@
                 <main class="content-area">
                     <h2 class="section-title">Upcoming Presentation  <span id="next-date">Loading...</span></h2>
                         <div class="next-meeting-card">
-                                <p><strong>Title:</strong> <a href="#" id="next-paper-link" target="_blank"><span id="next-title">Loading...</span></a></p>
+                                <p><strong>Title: <a href="#" id="next-paper-link" target="_blank"><span id="next-title">Loading...</span></a></strong></p>
                                 <p><strong>Conference:</strong> <span id="next-conference">Loading...</span></p>
                                 <p><strong>Presenter:</strong> <span id="next-presenter">Loading...</span></p>
                                 <p><strong>Location:</strong> SEU Computer Science Building, Room 413</p>
@@ -135,7 +135,7 @@
     
     <footer>
         <div class="container">
-            <p>© 2025 TrustML Group at SEU &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+            <p>© 2025 TrustML Group at SEU &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; Template by <a href="mailto:your-email@example.com">Deng-Bao Wang</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
             <i class="fas fa-database"></i> Data source: Google Sheet &nbsp;&nbsp;<a href="https://docs.google.com/spreadsheets/d/1gzMzanZzVq2nXOSCEo3brlErXrSFua0CGHk-2El5ExE" class="view-display-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Access</a>
             </p>
         </div>
@@ -148,6 +148,7 @@
         let currentPage = 1;
         let itemsPerPage = 10;
         let filteredMeetings = [];
+        let nextMeetingId = null;
 
         // Google Sheets configuration
         const SHEET_ID = '1gzMzanZzVq2nXOSCEo3brlErXrSFua0CGHk-2El5ExE'; // 替换为你的Google Sheet ID
@@ -236,8 +237,8 @@
                     try {
                         // Process the Google Sheet data
                         meetings = processGoogleSheetData(data.values);
-                        renderArchiveTable();
                         renderNextMeeting();
+                        renderArchiveTable();
                     } catch (error) {
                         showError('处理Google Sheet数据时出错: ' + error.message);
                     }
@@ -286,8 +287,8 @@
             if (cachedData && cachedData.length > 0) {
                 // 使用缓存数据
                 meetings = cachedData;
-                renderArchiveTable();
                 renderNextMeeting();
+                renderArchiveTable();
                 
                 // 在后台更新缓存（如果过期）
                 if (isCacheExpired()) {
@@ -456,7 +457,13 @@
             const sortOption = sortSelect.value;
             
             // Filter meetings
-            filteredMeetings = meetings.filter(meeting => 
+            let filteredByDate = meetings.filter(meeting => {
+                const meetingId = meeting.id || `${meeting.Date}-${meeting.Title}`;
+                return meetingId !== nextMeetingId;
+            });
+            
+            // 第二次过滤：基于搜索条件
+            filteredMeetings = filteredByDate.filter(meeting => 
                 (meeting.Presenter && meeting.Presenter.toLowerCase().includes(searchTerm)) ||
                 (meeting.Title && meeting.Title.toLowerCase().includes(searchTerm)) ||
                 (meeting.Conference && meeting.Conference.toLowerCase().includes(searchTerm))
@@ -578,6 +585,9 @@
             } else {
                 paperLink.style.display = 'none';
             }
+            if (nextMeeting) {
+                nextMeetingId = nextMeeting.id || `${nextMeeting.Date}-${nextMeeting.Title}`;
+            }
         }
 
         // 刷新缓存和数据的函数
@@ -602,7 +612,7 @@
             // 确保刷新 Upcoming Presentation
             renderNextMeeting();
         }
-    
+
         function showError(message) {
             archiveTableBody.innerHTML = `
                 <tr>
