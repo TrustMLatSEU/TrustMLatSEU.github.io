@@ -55,7 +55,7 @@
                         <ul class="research-areas">
                             <li><a href="https://bdcc.seu.edu.cn/4/23/list.html" target="_blank"> 东南大学大数据计算中心用户申请</a></li>
                             <li><a href="https://sc.seu.edu.cn/docs/index.html" target="_blank"> 东南大学大数据计算中心使用手册</a></li>
-                            <li><a href="https://docs.google.com/document/d/10WwGb411SLdB4K71jUtA7Rdr94x3v5ZCevhbe07uR9c/edit?usp=drive_link" target="_blank"> V100 GPU服务器使用说明 </a></li>
+                            <li><a href="https://docs.google.com/document/d/10WwGb411SLdB4K71jUtA7Rdr94x3v5ZCevhbe07uR9c/edit?usp=drive_link" target="_blank"> V100 GPU服务器使用说明</a></li>
                         </ul>
                     </div>
                 </aside>
@@ -70,7 +70,8 @@
                                 <p><strong>Tencent Meeting ID:</strong> <a href="https://meeting.tencent.com/dm/zy7FLyzPJmUT" target="_blank">#522-1446-6679</a> </p>
                         </div>
 
-                    <h2 class="section-title">Presentation Archive
+                    <h2 class="section-title">
+                        Presentation Archive
                         <div class="filter-options">
                             <select id="sort-select">
                                 <option value="date-desc">Sort by Date (Newest First)</option>
@@ -78,6 +79,10 @@
                                 <option value="presenter">Sort by Presenter</option>
                             </select>
                             <input type="text" id="search-input" placeholder="Search presenter, title or conference">
+                            <!-- 添加刷新按钮 -->
+                            <button id="refresh-table" class="refresh-button" title="Refresh Data">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
                     </h2>
                     
@@ -153,7 +158,8 @@
         const archiveTableBody = document.getElementById('archive-table-body');
         const sortSelect = document.getElementById('sort-select');
         const searchInput = document.getElementById('search-input');
-
+        const refreshTableBtn = document.getElementById('refresh-table');
+        
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             // Add event listeners
@@ -163,6 +169,8 @@
             // Load data from Google Sheet
             //loadDataFromGoogleSheet(); // 原始调用
             loadDataWithCaching(); // 使用缓存机制
+            // 添加刷新按钮事件监听
+            refreshTableBtn.addEventListener('click', refreshCacheAndData);
 
         });
 
@@ -572,6 +580,29 @@
             }
         }
 
+        // 刷新缓存和数据的函数
+        function refreshCacheAndData() {
+            // 清除缓存
+            localStorage.removeItem(CACHE_KEY);
+            
+            // 显示加载状态
+            archiveTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="loading-indicator">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            正在刷新数据...
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            // 重新加载数据
+            fetchDataFromGoogleSheet(false);
+            // 确保刷新 Upcoming Presentation
+            renderNextMeeting();
+        }
+    
         function showError(message) {
             archiveTableBody.innerHTML = `
                 <tr>
