@@ -28,7 +28,7 @@
         }
 
         .container {
-            max-width: 1250px;
+            max-width: 1280px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -171,8 +171,14 @@
         .archive-table tr:last-child td {
             border-bottom: none;
         }
+        .archive-table td:nth-child(1) {
+            width: 1rem; /* 第二列宽度 */
+        }
         .archive-table td:nth-child(2) {
-            width: 10rem; /* 第二列宽度 */
+            width: 13rem; /* 第二列宽度 */
+        }
+        .archive-table td:nth-child(3) {
+            width: 30rem; /* 第二列宽度 */
         }
         .archive-table tr:hover {
             background-color: #f5f9ff;
@@ -191,13 +197,13 @@
         .view-display-btn {
             display: inline-block;
             margin-top: 0.5rem;
-            padding: 0.6rem 1.2rem;
+            padding: 0.2rem 0.6rem;
             background: linear-gradient(to right, var(--primary-color), var(--dark-color));
             color: white;
             border: none;
             border-radius: 30px;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.7rem;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
@@ -287,10 +293,10 @@
         }
 
         .material-link {
-            padding: 4px 10px;
+            padding: 4px 4px 4px 14px;
             background: var(--light-color);
-            border-radius: 30px;
-            font-size: 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -463,4 +469,38 @@
             padding: 6px;
             border: 1px solid #ddd;
             border-radius: 4px;
+        }
+
+
+        /* 添加警告消息样式 */
+        .warning-message {
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            color: #856404;
+        }
+
+        .warning-message i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* 更新错误消息样式 */
+        .error-message {
+            padding: 15px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-message i {
+            margin-right: 10px;
+            font-size: 1.2em;
         }

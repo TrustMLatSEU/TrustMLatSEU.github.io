@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Created by Deng-Bao Wang -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,14 +9,13 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5"></script>
-
 </head>
 <body>
     <header>
         <div class="container">
             <div class="header-content">
                 <div>
-                    <h1>Trustworthy Machine Learning Group</h1>
+                    <h1>Trustworthy ML Reading Group @ SEU</h1>
                     <p class="subtitle">Weekly Seminar Series</p>
                 </div>
             </div>
@@ -29,8 +29,8 @@
                     <div class="about-section">
                         <h2 class="section-title">About Our Group</h2>
                         <div class="about-content">
-                            <p>We are a research team focused on Trustworthy Machine Learning, led by Deng-Bao Wang. Our group is part of the School of Computer Science and Engineering at Southeast University and PALM Lab.</p>
-                            <p>We are particularly focused on uncertainty quantification in large-scale and multimodal models:</p>
+                            <p>We are a research team focused on Trustworthy Machine Learning, led by Deng-Bao Wang. Our group is part of the School of Computer Science and Engineering and PALM Lab at Southeast University.</p>
+                            <p>We are particularly focused on uncertainty quantification in modern large models.</p>
                             </div>
                         
                         <h3 class="about-subtitle">Related Topics</h3>
@@ -40,29 +40,34 @@
                             <li>Reliable Multimodal Foundation Models</li>
                             <li>Out-of-Distribution Performance Prediction</li>
                             <li>Uncertainty Quantification in Embodied AI Systems</li>
-                            <li>Trustworthy AI for Real-World Applications</li>
+                            <li>Trustworthy AI for Science Discovery</li>
                         </ul>
                         
                         <div class="tutorial-section">
-                            <h3><i class="fas fa-info-circle"></i>What paper should you share?</h3>
+                            <h3><i class="fas fa-info-circle"></i>What papers should you share?</h3>
                             <ul>
-                                <li>Paper that published within the past year, or</li>
+                                <li>Papers published within the past year, or</li>
                                 <li>highly cited or influential works, or</li>
-                                <li>papers you genuinely believe are valuable, or</li>
                                 <li>writen by your favorite researchers, or</li>
                                 <li>those likely to spark discussion.</li>
                         </div>
+                        <h3 class="about-subtitle">Useful Links</h3>
+                        <ul class="research-areas">
+                            <li><a href="https://bdcc.seu.edu.cn/4/23/list.html" target="_blank"> 东南大学大数据计算中心用户申请</a></li>
+                            <li><a href="https://sc.seu.edu.cn/docs/index.html" target="_blank"> 东南大学大数据计算中心使用手册</a></li>
+                            <li><a href="https://docs.google.com/document/d/10WwGb411SLdB4K71jUtA7Rdr94x3v5ZCevhbe07uR9c/edit?usp=drive_link" target="_blank"> V100 GPU服务器使用说明 </a></li>
+                        </ul>
                     </div>
                 </aside>
                 
                 <main class="content-area">
                     <h2 class="section-title">Upcoming Presentation  <span id="next-date">Loading...</span></h2>
                         <div class="next-meeting-card">
-                                <p><strong>Title:</strong> <a href="#" id="next-paper-link"><span id="next-title">Loading...</span></a></p>
+                                <p><strong>Title:</strong> <a href="#" id="next-paper-link" target="_blank"><span id="next-title">Loading...</span></a></p>
                                 <p><strong>Conference:</strong> <span id="next-conference">Loading...</span></p>
                                 <p><strong>Presenter:</strong> <span id="next-presenter">Loading...</span></p>
                                 <p><strong>Location:</strong> SEU Computer Science Building, Room 413</p>
-                                <p><strong>Tencent Meeting ID:</strong> <a href="https://meeting.tencent.com/dm/zy7FLyzPJmUT">#522-1446-6679</a> </p>
+                                <p><strong>Tencent Meeting ID:</strong> <a href="https://meeting.tencent.com/dm/zy7FLyzPJmUT" target="_blank">#522-1446-6679</a> </p>
                         </div>
 
                     <h2 class="section-title">Presentation Archive
@@ -125,10 +130,9 @@
     
     <footer>
         <div class="container">
-            <p>© 2025 TrustML Group at SEU | Created by Deng-Bao Wang</p>
-            <a href="https://docs.qq.com/sheet/DYmhkVFhIZm1jSURB?nlc=1&tab=BB08J2" class="view-display-btn" target="_blank">
-                <i class="fas fa-external-link-alt"></i> Access the Tencent Docs Spreadsheet
-            </a>
+            <p>© 2025 TrustML Group at SEU &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+            <i class="fas fa-database"></i> Data source: Google Sheet &nbsp;&nbsp;<a href="https://docs.google.com/spreadsheets/d/1gzMzanZzVq2nXOSCEo3brlErXrSFua0CGHk-2El5ExE" class="view-display-btn" target="_blank"><i class="fas fa-external-link-alt"></i> Access</a>
+            </p>
         </div>
     </footer>
 
@@ -139,6 +143,11 @@
         let currentPage = 1;
         let itemsPerPage = 10;
         let filteredMeetings = [];
+
+        // Google Sheets configuration
+        const SHEET_ID = '1gzMzanZzVq2nXOSCEo3brlErXrSFua0CGHk-2El5ExE'; // 替换为你的Google Sheet ID
+        const SHEET_NAME = 'presentation'; // 替换为你的工作表名称
+        const API_KEY = 'AIzaSyBQzHLMvJg2E0YXzhswedNriodB0Pw8ykc'; // 替换为你的Google API密钥
 
         // Page elements
         const archiveTableBody = document.getElementById('archive-table-body');
@@ -151,9 +160,10 @@
             sortSelect.addEventListener('change', renderArchiveTable);
             searchInput.addEventListener('input', renderArchiveTable);
             
+            // Load data from Google Sheet
+            //loadDataFromGoogleSheet(); // 原始调用
+            loadDataWithCaching(); // 使用缓存机制
 
-            // Load data from server
-            loadCSVData();
         });
 
         // 添加分页按钮事件
@@ -190,106 +200,231 @@
             renderArchiveTable();
         });
 
-        // Function to load CSV data from server
-        function loadCSVData() {
+        // Function to load data from Google Sheet
+        function loadDataFromGoogleSheet() {
             // Show loading state
             archiveTableBody.innerHTML = `
                 <tr>
                     <td colspan="6">
                         <div class="loading-indicator">
                             <i class="fas fa-spinner fa-spin"></i>
-                            正在从服务器加载会议数据...
+                            正在从Google Sheet加载会议数据...
                         </div>
                     </td>
                 </tr>
             `;
             
-            // Simulated data - this would be replaced with actual fetch in production
-            const simulateData = true; // Set to false to use real fetch
+            // Construct the Google Sheets API URL
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`;
             
-            if (simulateData) {
-                try {
-                    const csvText = `Date,Presenter,Title,Conference,Year,Paper Link
-        2025/9/1,Deng-Bao Wang,Urania: Differentially Private Insights into AI Use.,COLM,2025,https://arxiv.org/abs/2506.04681
-        2025/8/25,Alice Johnson,Robust Models Against Adversarial Attacks,ICML,2025,https://arxiv.org/abs/2505.12345
-        2025/8/18,Bob Smith,Fairness in Recommender Systems,KDD,2025,https://arxiv.org/abs/2504.12345
-        2025/8/11,Carol Williams,Privacy-Preserving Federated Learning,NeurIPS,2025,https://arxiv.org/abs/2503.12345
-        2025/8/4,David Brown,Interpretable Deep Learning Models,AAAI,2025,https://arxiv.org/abs/2502.12345
-        2025/7/28,Emma Davis,Ethical Considerations in AI Deployment,FAccT,2025,https://arxiv.org/abs/2501.12345
-        2025/7/21,Frank Miller,Secure Multi-Party Computation for ML,Security,2025,https://arxiv.org/abs/2500.12345
-        2025/7/14,Grace Wilson,Transformer Models for Anomaly Detection,ICLR,2025,https://arxiv.org/abs/2499.12345
-        2025/8/11,Carol Williams,Privacy-Preserving Federated Learning,NeurIPS,2025,https://arxiv.org/abs/2503.12345
-        2025/8/4,David Brown,Interpretable Deep Learning Models,AAAI,2025,https://arxiv.org/abs/2502.12345
-        2025/7/28,Emma Davis,Ethical Considerations in AI Deployment,FAccT,2025,https://arxiv.org/abs/2501.12345
-        2025/7/21,Frank Miller,Secure Multi-Party Computation for ML,Security,2025,https://arxiv.org/abs/2500.12345
-        2025/7/14,Grace Wilson,Transformer Models for Anomaly Detection,ICLR,2025,https://arxiv.org/abs/2499.12345`;
-                    
-                    meetings = parseCSV(csvText);
-                    renderArchiveTable();
-                    renderNextMeeting(); // 添加这行
-                } catch (error) {
-                    showError('解析模拟CSV数据时出错: ' + error.message);
-                }
-            } else {
-                // Original fetch code for production
-                fetch('meetings.csv')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('无法加载会议数据文件');
-                        }
-                        return response.text();
-                    })
-                    .then(csvText => {
-                        try {
-                            meetings = parseCSV(csvText);
-                            renderArchiveTable();
-                            renderNextMeeting(); // 添加这行
-                        } catch (error) {
-                            showError('解析CSV文件时出错: ' + error.message);
-                        }
-                    })                
-                    .catch(error => {
-                        showError('加载会议数据时出错: ' + error.message);
-                    });
-            }
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('无法从Google Sheet加载数据');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    try {
+                        // Process the Google Sheet data
+                        meetings = processGoogleSheetData(data.values);
+                        renderArchiveTable();
+                        renderNextMeeting();
+                    } catch (error) {
+                        showError('处理Google Sheet数据时出错: ' + error.message);
+                    }
+                })
+                .catch(error => {
+                    showError('加载Google Sheet数据时出错: ' + error.message);
+                });
         }
 
-        // Parse CSV text to array of objects
-        function parseCSV(csvText) {
-
-            const lines = csvText.split('\n').filter(line => line.trim());
-
-            if (lines.length < 2) {
-                throw new Error('CSV文件内容不足');
+        // Process Google Sheet data into our meeting format
+        function processGoogleSheetData(rows) {
+            if (!rows || rows.length < 2) {
+                throw new Error('Google Sheet中没有足够的数据');
             }
             
-            const headers = lines[0].split(',').map(header => header.trim());
-            
+            const headers = rows[0];
             const result = [];
             
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line) continue;
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.length === 0) continue;
                 
-                const values = line.split(',').map(value => value.trim());
-                
-                if (values.length === headers.length) {
-                    const meeting = {};
-                    headers.forEach((header, index) => {
-                        meeting[header] = values[index];
-                    });
-                    result.push(meeting);
-                }
+                const meeting = {};
+                headers.forEach((header, index) => {
+                    meeting[header] = row[index] || '';
+                });
+                result.push(meeting);
             }
             
             if (result.length === 0) {
-                throw new Error('CSV文件中没有有效数据');
+                throw new Error('Google Sheet中没有有效数据');
             }
             
             return result;
         }
 
+        // 添加缓存相关变量
+        const CACHE_KEY = 'trustml_meetings_cache';
+        const CACHE_DURATION = 30 * 60 * 1000; // 30分钟缓存 (单位: 毫秒)
 
+        // Function to load data with caching
+        function loadDataWithCaching() {
+            // 检查本地是否有有效缓存
+            const cachedData = getCachedData();
+            
+            if (cachedData && cachedData.length > 0) {
+                // 使用缓存数据
+                meetings = cachedData;
+                renderArchiveTable();
+                renderNextMeeting();
+                
+                // 在后台更新缓存（如果过期）
+                if (isCacheExpired()) {
+                    fetchDataFromGoogleSheet(true);
+                }
+            } else {
+                // 没有缓存或缓存过期，直接从Google Sheet获取
+                fetchDataFromGoogleSheet(false);
+            }
+        }
+
+        // 获取缓存数据
+        function getCachedData() {
+            try {
+                const cached = localStorage.getItem(CACHE_KEY);
+                if (!cached) return null;
+                
+                const parsed = JSON.parse(cached);
+                if (!parsed || !parsed.data || !parsed.timestamp) return null;
+                
+                // 检查缓存是否过期
+                const currentTime = new Date().getTime();
+                if (currentTime - parsed.timestamp > CACHE_DURATION) {
+                    localStorage.removeItem(CACHE_KEY);
+                    return null;
+                }
+                
+                return parsed.data;
+            } catch (e) {
+                console.error('Error reading cache:', e);
+                return null;
+            }
+        }
+
+        // 存储数据到缓存
+        function cacheData(data) {
+            try {
+                const cache = {
+                    timestamp: new Date().getTime(),
+                    data: data
+                };
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+            } catch (e) {
+                console.error('Error caching data:', e);
+            }
+        }
+
+        // 检查缓存是否过期
+        function isCacheExpired() {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (!cached) return true;
+            
+            try {
+                const parsed = JSON.parse(cached);
+                if (!parsed || !parsed.timestamp) return true;
+                
+                const currentTime = new Date().getTime();
+                return currentTime - parsed.timestamp > CACHE_DURATION;
+            } catch (e) {
+                return true;
+            }
+        }
+
+        // 更新后的数据加载函数
+        function fetchDataFromGoogleSheet(silentUpdate = false) {
+            if (!silentUpdate) {
+                // 显示加载状态
+                archiveTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="loading-indicator">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                正在从Google Sheet加载会议数据...
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`;
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('无法从Google Sheet加载数据');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    try {
+                        meetings = processGoogleSheetData(data.values);
+                        cacheData(meetings); // 缓存数据
+                        
+                        if (!silentUpdate) {
+                            renderArchiveTable();
+                            renderNextMeeting();
+                        }
+                    } catch (error) {
+                        if (!silentUpdate) {
+                            showError('处理Google Sheet数据时出错: ' + error.message);
+                        }
+                    }
+                })
+                .catch(error => {
+                    if (!silentUpdate) {
+                        // 尝试使用缓存作为回退
+                        const cached = getCachedData();
+                        if (cached && cached.length > 0) {
+                            meetings = cached;
+                            renderArchiveTable();
+                            renderNextMeeting();
+                            showWarning('无法连接到Google Sheet。显示缓存数据。');
+                        } else {
+                            showError('加载Google Sheet数据时出错: ' + error.message);
+                        }
+                    }
+                });
+        }
+
+        // 添加警告提示
+        function showWarning(message) {
+            const warningDiv = document.createElement('div');
+            warningDiv.className = 'warning-message';
+            warningDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                ${message}
+            `;
+            
+            // 在表格上方显示警告
+            const table = document.querySelector('.archive-table');
+            if (table && table.parentNode) {
+                table.parentNode.insertBefore(warningDiv, table);
+            }
+            
+            // 3秒后淡出
+            setTimeout(() => {
+                warningDiv.style.transition = 'opacity 1s';
+                warningDiv.style.opacity = '0';
+                setTimeout(() => {
+                    if (warningDiv.parentNode) {
+                        warningDiv.parentNode.removeChild(warningDiv);
+                    }
+                }, 1000);
+            }, 3000);
+        }
         // Render meeting archive table
         function renderArchiveTable() {
             if (meetings.length === 0) {
@@ -384,7 +519,7 @@
                         <td>${meeting.Title || ''}</td>
                         <td>${meeting.Conference + ' ' + meeting.Year || ''}</td>
                         <td>
-                            <a href="${meeting['Paper Link']}" class="material-link" target="_blank"> &nbspSlides</a>
+                            <a href="${meeting['Slides Link']}" class="material-link" target="_blank"> &nbspSlides</a>
                         </td>
                     </tr>
                 `;
@@ -404,7 +539,6 @@
             document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
             document.getElementById('last-page').disabled = currentPage === totalPages || totalPages === 0;
         }
-
 
         // 添加renderNextMeeting函数
         function renderNextMeeting() {
