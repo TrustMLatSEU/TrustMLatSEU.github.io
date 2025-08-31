@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv 智能论文浏览平台 - 信任机器学习版</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>arXiv 论文智能推荐</h1>
+            <p class="subtitle">基于大语言模型筛选机器学习领域的最新研究</p>
+        </header>
+        
+        <div class="filter-card">
+            <h2><i class="fas fa-calendar-alt"></i> 选择日期范围</h2>
+            <div class="date-range-picker">
+                <div class="date-input">
+                    <label for="start-date">开始日期</label>
+                    <input type="date" id="start-date">
+                </div>
+                <div class="date-input">
+                    <label for="end-date">结束日期</label>
+                    <input type="date" id="end-date">
+                </div>
+            </div>
+            <div class="category-selector">
+                <h2><i class="fas fa-tags"></i> 选择arXiv领域</h2>
+                <div class="category-options">
+                    <div class="category-group">
+                        <h3>计算机科学</h3>
+                        <div class="category-checkboxes">
+                            <label><input type="checkbox" name="category" value="cs.AI"> 人工智能 (cs.AI)</label>
+                            <label><input type="checkbox" name="category" value="cs.LG" checked> 机器学习 (cs.LG)</label>
+                            <label><input type="checkbox" name="category" value="cs.CV"> 计算机视觉 (cs.CV)</label>
+                            <label><input type="checkbox" name="category" value="cs.CL"> 计算语言学 (cs.CL)</label>
+                            <label><input type="checkbox" name="category" value="cs.NE"> 神经网络 (cs.NE)</label>
+                            <label><input type="checkbox" name="category" value="stat.ML"> 机器学习统计 (stat.ML)</label>
+                            <label><input type="checkbox" name="category" value="math.OC"> 优化与控制 (math.OC)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="api-settings">
+                <h3><i class="fas fa-key"></i> API 设置<a href="help.html" target="_blank" style="font-size: 0.8rem; color: var(--primary); text-decoration: none;"><i class="fas fa-question-circle"></i> 如何获取API Key?</a></h3>
+                <div class="api-selector">
+                    <button class="api-btn active" data-api="kimi"><i class="fas fa-moon"></i> Kimi</button>
+                    <button class="api-btn" data-api="openai"><i class="fas fa-robot"></i> OpenAI</button>
+                </div>
+                
+                <div id="kimi-settings" class="api-settings-content">
+                    <div class="model-selector">
+                        <label for="kimi-model">选择模型</label>
+                        <select id="kimi-model">
+                            <option value="moonshot-v1-8k">moonshot-v1-8k</option>
+                            <option value="moonshot-v1-32k">moonshot-v1-32k</option>
+                            <option value="moonshot-v1-128k" selected>moonshot-v1-128k</option>
+                        </select>
+                    </div>
+                    <div class="api-key-input">
+                        <label for="kimi-api-key">Kimi API Key</label>
+                        <input type="password" id="kimi-api-key" placeholder="输入您的Kimi API密钥">
+                    </div>
+                </div>
+                
+                <div id="openai-settings" class="api-settings-content hide">
+                    <div class="model-selector">
+                        <label for="openai-model">选择模型</label>
+                        <select id="openai-model">
+                            <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                            <option value="gpt-4">gpt-4</option>
+                            <option value="gpt-4-turbo" selected>gpt-4-turbo</option>
+                            <option value="gpt-4o">gpt-4o</option>
+                        </select>
+                    </div>
+                    <div class="api-key-input">
+                        <label for="openai-api-key">OpenAI API Key</label>
+                        <input type="password" id="openai-api-key" placeholder="输入您的OpenAI API密钥">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="prompt-editor">
+                <h2><i class="fas fa-edit"></i> 自定义筛选Prompt</h2>
+                <p>以下Prompt专为TrustML课题组设计，您可以通过修改自定义想要筛选的研究方向：</p>
+                <textarea id="custom-prompt" class="prompt-textarea">
+You are an AI research assistant specialized in filtering academic papers for a research team focused on trustworthiness and uncertainty in machine learning systems. 
+
+## RESEARCH FOCUS AREAS
+Our team conducts cutting-edge research in the following specific areas:
+1. **Uncertainty calibration** in modern deep learning (including calibration techniques, reliability diagrams, expected calibration error, etc.)
+2. **Uncertainty evaluation** of (multimodal) large language models (confidence estimation, uncertainty quantification in LLMs, probabilistic outputs)
+3. **Hallucination detection and mitigation** in foundation models (identifying and reducing factual inaccuracies, confidence scoring for generated content)
+4. **Out-of-distribution accuracy prediction** (detection of distribution shift, domain adaptation uncertainty, generalization error estimation)
+5. **Uncertainty quantification in embodied intelligence** (robotics, autonomous systems, reinforcement learning with uncertainty)
+6. **Trustworthy AI for scientific discovery** (reliable AI in scientific applications, uncertainty-aware scientific models, robust AI for research)
+
+## KEY TECHNICAL CONCEPTS TO LOOK FOR:
+- Uncertainty quantification (UQ)
+- Calibration techniques (temperature scaling, Platt scaling, etc.)
+- Bayesian neural networks
+- Ensemble methods for uncertainty
+- Confidence estimation
+- Out-of-distribution detection
+- Distribution shift adaptation
+- Hallucination mitigation
+- Trustworthy AI
+- Reliable machine learning
+- Probabilistic deep learning
+- Uncertainty in generative models
+- Conformal prediction
+- Uncertainty in multimodal systems
+
+## SCORING DISTRIBUTION GUIDELINES:
+Maintain a realistic score distribution where:
+- 5-15% of papers score 0.9-1.0 (exceptional relevance)
+- 15-25% score 0.7-0.8 (strong relevance)  
+- 30-40% score 0.5-0.6 (moderate relevance)
+- 20-30% score 0.3-0.4 (tangential relevance)
+- 10-20% score 0.0-0.2 (irrelevant)
+
+## SCORING CRITERIA:
+- **0.9-1.0**: MUST explicitly address core research areas with novel methodological contributions. Requires direct mention of specific uncertainty/trustworthiness techniques.
+- **0.7-0.8**: Strong connection to our interests with clear discussion of relevant concepts, but may be applied research.
+- **0.5-0.6**: General ML papers that mention uncertainty/trustworthiness concepts in passing or as secondary aspects.
+- **0.3-0.4**: Papers in adjacent fields that might have implications but don't explicitly address uncertainty research.
+- **0.0-0.2**: Papers completely outside our scope (hardware, databases, pure theory without application).
+
+## STRICT EVALUATION RULES:
+1. Score based on TITLE CONTENT ONLY - no inference beyond explicit statements
+2. Require explicit mention of uncertainty/trustworthiness concepts in title
+3. Be conservative with high scores (0.9+) - reserve for exact focus matches
+4. Consider terminology specificity - 'uncertainty quantification' > 'uncertainty'
+5. Normalize scores across the batch to maintain distribution guidelines
+
+## ANALYSIS REQUIREMENTS:
+For each paper, analyze the title and assess relevance based on:
+1. Direct explicit match to our research areas
+2. Explicit mention of key technical concepts  
+3. Methodology alignment with uncertainty/trustworthiness research
+4. Application domain relevance (LLMs, foundation models, scientific AI, etc.)
+
+## OUTPUT FORMAT:
+Return ONLY a valid JSON array where each object contains paperIndex and relevance score, like this:
+[
+    {"paperIndex": 0, "relevance": 0.9},
+    {"paperIndex": 1, "relevance": 0.2},
+    {"paperIndex": 2, "relevance": 0.7},
+    ...
+]
+
+## IMPORTANT NOTES:
+- Respond ONLY with valid JSON format
+- Do not include any additional explanations
+- Relevance scores should be between 0 and 1
+- You MUST provide a relevance score for EVERY paper in the list
+- The output must be a complete JSON array containing all papers
+- Maintain consistent scoring standards throughout
+- Avoid over-interpreting vague titles
+- Remember most papers will be moderately relevant at best
+
+
+                </textarea>
+            </div>
+            
+            <div class="ai-filter-section">
+                <button id="ai-filter-btn" class="ai-filter-btn">
+                    <i class="fas fa-filter"></i> 获取相关论文
+                </button>
+            </div>
+            
+            <div id="test-status" class="hide"></div>
+
+            <div id="prompt-display" class="hide" style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #4361ee;">
+                <h3><i class="fas fa-code"></i> 发送给AI的Prompt</h3>
+                <pre id="prompt-content" style="white-space: pre-wrap; word-wrap: break-word; background-color: white; padding: 10px; border-radius: 5px; max-height: 300px; overflow-y: auto;"></pre>
+                <button id="copy-prompt-btn" class="time-btn" style="margin-top: 10px;">
+                    <i class="fas fa-copy"></i> 复制Prompt
+                </button>
+            </div>
+        </div>
+        
+        <div id="results-container">
+            <div class="results-section">
+                <div class="papers-header">
+                    <h2><i class="fas fa-file-alt"></i> 筛选结果</h2>
+                    <div class="results-count" id="results-count">共 0 篇相关论文</div>
+                </div>
+                
+                <div class="papers-container" id="papers-container">
+                    <div class="no-results">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>等待筛选结果</h3>
+                        <p>请选择日期范围并点击"获取相关论文"按钮</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="citation">
+        <p>© 2025 TrustML Group at SEU</p>
+    </footer>
+
+    <script>
+        // 存储当前加载的论文
+        let currentPapers = [];
+        // 当前选择的API
+        let currentAPI = 'kimi';
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置默认日期范围（最近一周）
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() -3);
+            
+            document.getElementById('start-date').valueAsDate = startDate;
+            document.getElementById('end-date').valueAsDate = endDate;
+            
+            // API选择按钮点击事件
+            document.querySelectorAll('.api-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    document.querySelectorAll('.api-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // 为当前按钮添加active类
+                    this.classList.add('active');
+                    
+                    // 更新当前选择的API
+                    currentAPI = this.getAttribute('data-api');
+                    
+                    // 显示对应的API设置区域
+                    document.querySelectorAll('.api-settings-content').forEach(el => {
+                        el.classList.add('hide');
+                    });
+                    document.getElementById(`${currentAPI}-settings`).classList.remove('hide');
+                });
+            });
+            
+            // AI筛选按钮点击事件
+            document.getElementById('ai-filter-btn').addEventListener('click', function() {
+                const startDate = document.getElementById('start-date').value;
+                const endDate = document.getElementById('end-date').value;
+                
+                if (!startDate || !endDate) {
+                    alert('请选择开始日期和结束日期');
+                    return;
+                }
+                
+                loadAndFilterPapers(startDate, endDate);
+            });
+        });
+        
+        // 生成API URL的函数
+        function generateApiUrl(startDate, endDate) {
+            // 获取选中的领域
+            const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked'))
+                .map(el => el.value);
+            
+            // 如果没有选中任何领域，使用默认值
+            const categoriesToSearch = selectedCategories.length > 0 
+                ? selectedCategories 
+                : ['cs.LG']; // 默认值
+            
+            // 转换日期格式：YYYY-MM-DD → YYYYMMDD
+            const formatDate = (dateStr) => {
+                return dateStr.split('-').join('');
+            };
+            
+            const startDateStr = formatDate(startDate);
+            const endDateStr = formatDate(endDate);
+            
+            // 构建查询参数
+            const baseUrl = "https://export.arxiv.org/api/query?";
+            let queryParts = [];
+            
+            // 添加选中的领域
+            const categoryQuery = categoriesToSearch.map(cat => `cat:${cat}`).join(' OR ');
+            queryParts.push(`(${categoryQuery})`);
+            
+            // 日期范围
+            queryParts.push(`submittedDate:[${startDateStr} TO ${endDateStr}]`);
+            
+            // 组合所有参数
+            const query = queryParts.join(' AND ');
+            
+            // 完整URL
+            const url = `${baseUrl}search_query=${encodeURIComponent(query)}&start=0&max_results=1000&sortBy=submittedDate&sortOrder=descending`;
+            
+            return url;
+        }
+        
+        // 加载并筛选论文
+        async function loadAndFilterPapers(startDate, endDate) {
+            const url = generateApiUrl(startDate, endDate);
+            const testStatus = document.getElementById('test-status');
+            const papersContainer = document.getElementById('papers-container');
+            const btn = document.getElementById('ai-filter-btn');
+            const originalText = btn.innerHTML;
+            
+            // 设置按钮为加载状态
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在筛选...';
+            btn.classList.add('loading');
+            
+            // 显示加载状态
+            testStatus.className = 'status-message';
+            testStatus.innerHTML = `<p><span class="status-indicator"></span> 正在获取并筛选论文...</p>`;
+            testStatus.classList.remove('hide');
+            papersContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>正在获取并筛选论文...</p></div>';
+            
+            try {
+                // 发送请求获取arXiv论文
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态码: ${response.status}`);
+                }
+                
+                // 获取XML响应
+                const xmlText = await response.text();
+                
+                // 解析XML
+                currentPapers = parseXmlResponse(xmlText);
+                
+                if (currentPapers.length === 0) {
+                    throw new Error('在选定日期范围内未找到论文');
+                }
+                
+                // 准备要发送给AI的论文数据
+                const papersToSend = currentPapers.slice(0, 1000).map(paper => ({
+                    title: paper.title,
+                    abstract: paper.abstract,
+                    category: paper.category
+                }));
+                
+                let aiResponse;
+                
+                if (currentAPI === 'kimi') {
+                    aiResponse = await callKimiAPI(papersToSend);
+                } else if (currentAPI === 'openai') {
+                    aiResponse = await callOpenAIAPI(papersToSend);
+                } else {
+                    throw new Error('未知的API选择');
+                }
+                
+                // 更健壮地处理AI响应
+                let relevanceScores;
+                try {
+                    console.log("AI原始响应:", aiResponse);
+                    const responseObj = cleanAIResponse(aiResponse);
+                    relevanceScores = parseAIResponse(responseObj);
+                    
+                    if (!Array.isArray(relevanceScores) || relevanceScores.length === 0) {
+                        throw new Error('AI返回的相关度评分格式无效');
+                    }
+                    
+                    console.log("提取的相关度评分:", relevanceScores);
+                } catch (parseError) {
+                    throw new Error(`解析AI响应失败: ${parseError.message}`);
+                }
+                
+                // 更新论文相关度
+                currentPapers.forEach((paper, index) => {
+                    const scoreObj = relevanceScores.find(s => s.paperIndex === index);
+                    if (scoreObj) {
+                        paper.relevance = scoreObj.relevance;
+                    } else {
+                        paper.relevance = 0; // 默认值
+                    }
+                });
+
+                // 过滤掉相关度低于0.3的论文
+                const filteredPapers = currentPapers.filter(paper => paper.relevance >= 0.3);
+
+                // 按相关度排序
+                filteredPapers.sort((a, b) => b.relevance - a.relevance);
+
+                // 显示筛选后的论文
+                const top30Papers = filteredPapers.slice(0, 30);
+                displayParsedResults(top30Papers);
+
+                // 更新状态
+                testStatus.className = 'status-message success';
+                let statusMessage = '';
+                let resultsCountMessage = '';
+
+                if (filteredPapers.length > 30) {
+                    statusMessage = `<p><span class="status-indicator success"></span> 筛选完成! 共找到 ${filteredPapers.length} 篇相关论文，显示相关度最高的30篇</p>`;
+                    resultsCountMessage = `共 ${filteredPapers.length} 篇相关论文（显示前30篇）`;
+                } else if (filteredPapers.length > 0) {
+                    statusMessage = `<p><span class="status-indicator success"></span> 筛选完成! 共找到 ${filteredPapers.length} 篇相关论文</p>`;
+                    resultsCountMessage = `共 ${filteredPapers.length} 篇相关论文`;
+                } else {
+                    statusMessage = `<p><span class="status-indicator success"></span> 筛选完成! 未找到相关论文</p>`;
+                    resultsCountMessage = `无相关论文`;
+                }
+
+                testStatus.innerHTML = statusMessage;
+
+                // 显示结果数量
+                document.getElementById('results-count').innerHTML = `
+                    <span class="paper-date">${resultsCountMessage}</span>
+                `;
+                
+                // 恢复按钮状态
+                btn.innerHTML = originalText;
+                btn.classList.remove('loading');
+            } catch (error) {
+                // 显示错误信息
+                testStatus.className = 'status-message error';
+                testStatus.innerHTML = `
+                    <p><span class="status-indicator error"></span> 筛选失败: ${error.message}</p>
+                    <details style="margin-top: 10px;">
+                        <summary>查看详情</summary>
+                        <pre style="background: white; padding: 10px; border-radius: 5px; margin-top: 5px; max-height: 200px; overflow: auto;">
+${error.stack || error.message}
+                        </pre>
+                    </details>
+                `;
+
+                papersContainer.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff6b6b; margin-bottom: 20px;"></i>
+                        <p>筛选失败：${error.message}</p>
+                        <button class="time-btn active" style="margin-top: 15px;" onclick="loadAndFilterPapers('${startDate}', '${endDate}')">
+                            <i class="fas fa-redo"></i> 重新尝试
+                        </button>
+                    </div>
+                `;
+                
+                // 恢复按钮状态
+                btn.innerHTML = originalText;
+                btn.classList.remove('loading');
+            }
+        }
+
+        function cleanAIResponse(rawResponse) {
+            try {
+                // 如果已经是对象，直接返回
+                if (typeof rawResponse === 'object') {
+                    return rawResponse;
+                }
+                
+                // 尝试直接解析
+                try {
+                    return JSON.parse(rawResponse);
+                } catch (e) {
+                    console.warn("首次解析失败，尝试清理响应...");
+                }
+                
+                // 尝试修复常见JSON格式问题
+                let cleaned = rawResponse
+                    // 移除JSON外的文本
+                    .replace(/^[^{[]*/, '')
+                    .replace(/[^}\]]*$/, '')
+                    // 修复未转义的控制字符
+                    .replace(/\n/g, '\\n')
+                    .replace(/\t/g, '\\t')
+                    // 修复单引号
+                    .replace(/'/g, '"')
+                    // 修复未加引号的属性名
+                    .replace(/([{,]\s*)([a-zA-Z0-9_]+)(\s*:)/g, '$1"$2"$3')
+                    // 修复末尾多余的逗号
+                    .replace(/,\s*([}\]])/g, '$1');
+                
+                try {
+                    return JSON.parse(cleaned);
+                } catch (e2) {
+                    console.error("清理后仍解析失败:", e2);
+                    
+                    // 尝试提取可能的JSON部分
+                    const jsonMatch = rawResponse.match(/{.*}|\[.*\]/s);
+                    if (jsonMatch) {
+                        try {
+                            return JSON.parse(jsonMatch[0]);
+                        } catch (e3) {
+                            throw new Error(`无法修复响应JSON: ${e3.message}`);
+                        }
+                    }
+                    
+                    throw new Error(`无法解析AI响应: ${rawResponse}`);
+                }
+            } catch (e) {
+                console.error('清理AI响应失败:', e);
+                throw new Error(`清理AI响应失败: ${e.message}`);
+            }
+        }
+        
+        // 修改后的parseAIResponse函数
+        function parseAIResponse(aiResponse) {
+            try {
+                console.log("AI原始响应:", aiResponse);
+                
+                // 尝试解析为JSON对象
+                let responseObj = typeof aiResponse === 'string' ? JSON.parse(aiResponse) : aiResponse;
+                
+                // 检查可能的响应格式
+                // 1. 直接包含relevance_scores数组
+                if (responseObj.relevance_scores && Array.isArray(responseObj.relevance_scores)) {
+                    return responseObj.relevance_scores;
+                }
+                
+                // 2. 包含choices数组（OpenAI格式）
+                if (responseObj.choices && responseObj.choices[0]?.message?.content) {
+                    const content = responseObj.choices[0].message.content;
+                    try {
+                        const parsedContent = JSON.parse(content);
+                        if (Array.isArray(parsedContent)) {
+                            return parsedContent;
+                        }
+                        if (parsedContent.relevance_scores) {
+                            return parsedContent.relevance_scores;
+                        }
+                    } catch (e) {
+                        console.warn("解析choices内容失败:", e);
+                    }
+                }
+                
+                // 3. 包含result或data字段
+                if (responseObj.result && Array.isArray(responseObj.result)) {
+                    return responseObj.result;
+                }
+                if (responseObj.data && Array.isArray(responseObj.data)) {
+                    return responseObj.data;
+                }
+                
+                // 4. 顶层就是数组
+                if (Array.isArray(responseObj)) {
+                    return responseObj;
+                }
+                
+                // 5. 尝试提取所有包含relevance的对象
+                const extractedScores = [];
+                const traverse = (obj) => {
+                    if (typeof obj !== 'object' || obj === null) return;
+                    
+                    if (obj.paperIndex !== undefined && obj.relevance !== undefined) {
+                        extractedScores.push({
+                            paperIndex: obj.paperIndex,
+                            relevance: obj.relevance
+                        });
+                    }
+                    
+                    Object.values(obj).forEach(value => {
+                        if (typeof value === 'object') traverse(value);
+                    });
+                };
+                
+                traverse(responseObj);
+                
+                if (extractedScores.length > 0) {
+                    return extractedScores;
+                }
+                
+                throw new Error('无法从响应中找到相关度评分数据');
+            } catch (e) {
+                console.error('解析AI响应失败:', e);
+                throw new Error(`解析AI响应失败: ${e.message}`);
+            }
+        }
+
+        // 解析XML响应
+        function parseXmlResponse(xmlText) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+            const entries = xmlDoc.querySelectorAll("entry");
+            const papers = [];
+            
+            entries.forEach(entry => {
+                const id = entry.querySelector("id")?.textContent || "";
+                const title = entry.querySelector("title")?.textContent?.trim() || "";
+                const summary = entry.querySelector("summary")?.textContent?.trim() || "";
+                
+                // 提取类别
+                let category = "";
+                const categories = entry.querySelectorAll("category");
+                if (categories.length > 0) {
+                    category = categories[0].getAttribute("term") || "";
+                }
+                
+                // 提取作者
+                const authors = [];
+                const authorElements = entry.querySelectorAll("author");
+                authorElements.forEach(author => {
+                    const name = author.querySelector("name")?.textContent;
+                    if (name) authors.push(name);
+                });
+                
+                // 发布日期
+                const publishedDate = entry.querySelector("published")?.textContent || "";
+                const formattedDate = publishedDate ? new Date(publishedDate).toLocaleDateString() : "";
+                
+                // PDF链接
+                const pdfLink = entry.querySelector('link[title="pdf"]')?.getAttribute('href') || "";
+                
+                papers.push({
+                    id,
+                    title,
+                    abstract: summary,
+                    category,
+                    authors,
+                    date: formattedDate,
+                    pdfLink,
+                    relevance: null // 初始化为null，AI筛选后会添加相关度评分
+                });
+            });
+            
+            return papers;
+        }
+        
+        // 显示解析结果
+        function displayParsedResults(papers) {
+            const papersContainer = document.getElementById('papers-container');
+            
+            if (papers.length === 0) {
+                papersContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>未找到相关论文</h3>
+                        <p>请尝试选择不同的日期范围或修改筛选条件</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            papersContainer.innerHTML = '';
+            
+            papers.forEach(paper => {
+                const paperElement = document.createElement('div');
+                paperElement.className = 'paper-item';
+                
+                // 作者列表（最多显示3位）
+                let authorsText = "";
+                if (paper.authors.length > 0) {
+                    authorsText = paper.authors.slice(0, 3).join(', ');
+                    if (paper.authors.length > 3) {
+                        authorsText += ' 等';
+                    }
+                }
+                
+                // 获取类别简称
+                let categoryShort = "";
+                if (paper.category) {
+                    const parts = paper.category.split('.');
+                    if (parts.length > 1) {
+                        categoryShort = parts[1];
+                    }
+                }
+                
+                // 相关度标签
+                let relevanceTag = "";
+                if (paper.relevance !== null) {
+                    let relevanceClass = "medium";
+                    if (paper.relevance >= 0.8) relevanceClass = "high";
+                    else if (paper.relevance <= 0.4) relevanceClass = "low";
+                    
+                    relevanceTag = `<span class="relevance-tag ${relevanceClass}">相关度 ${(paper.relevance * 100).toFixed(0)}%</span>`;
+                }
+                
+                paperElement.innerHTML = `
+                    <div class="paper-header">
+                        <div class="paper-title">
+                            <span class="paper-title-text">${paper.title}</span>
+                            <div class="paper-tags">
+                                ${categoryShort ? `<span class="paper-category">${categoryShort}</span>` : ''}
+                                ${relevanceTag}
+                            </div>
+                        </div>
+                        <div class="paper-meta">
+                            <div class="paper-meta-item" title="作者"><i class="fas fa-user"></i> ${authorsText}</div>
+                            <div class="paper-meta-item" title="发布日期"><i class="fas fa-calendar"></i> ${paper.date}</div>
+                            <div class="paper-meta-item" title="PDF链接">
+                                <i class="fas fa-file-pdf"></i> 
+                                <a href="${paper.pdfLink}" target="_blank" onclick="event.stopPropagation()">PDF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="paper-abstract">
+                        ${paper.abstract}
+                    </div>
+                `;
+                
+                // 添加点击展开功能
+                const header = paperElement.querySelector('.paper-header');
+                const abstract = paperElement.querySelector('.paper-abstract');
+                
+                header.addEventListener('click', () => {
+                    abstract.classList.toggle('expanded');
+                });
+                
+                papersContainer.appendChild(paperElement);
+            });
+        }
+        
+        // 构建研究兴趣提示
+        function buildResearchInterestPrompt(papers) {
+            // 获取用户自定义的prompt模板
+            let promptTemplate = document.getElementById('custom-prompt').value;
+            
+            // 确保prompt以明确的指令结尾
+            if (!promptTemplate.trim().endsWith('Paper titles:')) {
+                promptTemplate = promptTemplate.trim() + '\n\nPaper titles:';
+            }
+            
+            // 生成论文标题列表
+            const papersList = papers.map((p, i) => ({
+                paperIndex: i,
+                title: p.title.replace(/[\n\t]/g, ' ').replace(/\s+/g, ' ').trim()
+            }));
+            
+            // 拼接完整的prompt
+            const fullPrompt = promptTemplate + '\n' + JSON.stringify(papersList, null, 2);
+            
+            return fullPrompt;
+        }
+
+        // 调用Kimi API的函数
+        async function callKimiAPI(papers) {
+            try {
+                const prompt = buildResearchInterestPrompt(papers);
+                const model = document.getElementById('kimi-model').value;
+                const apiKey = document.getElementById('kimi-api-key').value;
+                
+                if (!apiKey) {
+                    throw new Error('请提供Kimi API密钥');
+                }
+                
+                // 显示prompt
+                document.getElementById('prompt-display').classList.remove('hide');
+                document.getElementById('prompt-content').textContent = prompt;
+                
+                // 添加复制prompt功能
+                document.getElementById('copy-prompt-btn').addEventListener('click', () => {
+                    navigator.clipboard.writeText(prompt).then(() => {
+                        const btn = document.getElementById('copy-prompt-btn');
+                        const originalHtml = btn.innerHTML;
+                        btn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                        setTimeout(() => {
+                            btn.innerHTML = originalHtml;
+                        }, 2000);
+                    });
+                });
+
+                // API调用
+                const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are an AI research assistant. Respond ONLY with valid JSON format as requested, without any additional explanations."
+                            },
+                            {
+                                role: "user",
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.3,
+                        max_tokens: 200000,
+                        response_format: { type: "json_object" }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Kimi API错误: ${errorData.error?.message || response.statusText}`);
+                }
+                
+                const data = await response.json();
+                return data.choices[0].message.content;
+                
+            } catch (error) {
+                console.error('API调用详细错误:', {
+                    error: error.message,
+                    stack: error.stack,
+                    response: await response?.text()
+                });
+                throw new Error(`API调用失败: ${error.message}`);
+            }
+        }
+        
+        // 调用OpenAI API的函数
+        async function callOpenAIAPI(papers) {
+            try {
+                const prompt = buildResearchInterestPrompt(papers);
+                const model = document.getElementById('openai-model').value;
+                const apiKey = document.getElementById('openai-api-key').value;
+                
+                if (!apiKey) {
+                    throw new Error('请提供OpenAI API密钥');
+                }
+                
+                // 显示prompt
+                document.getElementById('prompt-display').classList.remove('hide');
+                document.getElementById('prompt-content').textContent = prompt;
+                
+                // 使用支持JSON模式的模型
+                const requestBody = {
+                    model: model,
+                    messages: [
+                        {
+                            role: "system",
+                            content: "You are an AI research assistant. Respond ONLY with valid JSON format as requested, without any additional explanations."
+                        },
+                        {
+                            role: "user",
+                            content: prompt
+                        }
+                    ],
+                    temperature: 0.3,
+                    response_format: { type: "json_object" } // 确保模型支持这个参数
+                };
+                
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`OpenAI API错误: ${errorData.error?.message || response.statusText}`);
+                }
+                
+                const data = await response.json();
+                return data.choices[0].message.content;
+                
+            } catch (error) {
+                console.error('OpenAI API调用详细错误:', error);
+                throw new Error(`OpenAI API调用失败: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

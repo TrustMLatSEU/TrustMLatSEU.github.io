@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kimi API Key 获取指南</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #4bb543;
+            --warning: #fca311;
+            --danger: #f72525;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: var(--dark);
+            background-color: #f5f7fa;
+        }
+        
+        .guide-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: var(--light);
+            position: relative;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .step-number {
+            position: absolute;
+            left: -15px;
+            top: -15px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .step h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.3rem;
+            padding-left: 30px;
+        }
+        
+        .step-content {
+            padding-left: 30px;
+        }
+        
+        .step p {
+            margin-bottom: 10px;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .action-icon {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1.1rem;
+            margin-top: 3px;
+        }
+        
+        .note {
+            background-color: rgba(252, 163, 17, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .note strong {
+            color: var(--warning);
+        }
+        
+        .warning {
+            background-color: rgba(247, 37, 37, 0.1);
+            border-left: 4px solid var(--danger);
+        }
+        
+        .warning strong {
+            color: var(--danger);
+        }
+        
+        .success {
+            background-color: rgba(75, 181, 67, 0.1);
+            border-left: 4px solid var(--success);
+        }
+        
+        .success strong {
+            color: var(--success);
+        }
+        
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        .platform-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background-color: white;
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            color: var(--primary);
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        
+        .platform-link:hover {
+            background-color: var(--light);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .guide-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <h1>
+            <i class="fas fa-key" style="margin-right: 10px;"></i>
+            Kimi API Key 获取指南
+        </h1>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h2>访问Kimi开发者平台</h2>
+            <div class="step-content">
+                <p>首先需要登录Kimi的开发者平台获取API Key：</p>
+                
+                <a href="https://platform.moonshot.cn/console/account" target="_blank" class="platform-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    前往Kimi开发者平台
+                </a>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <div>
+                        <strong>如果您已有Kimi账号：</strong> 直接使用账号登录
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <strong>如果没有账号：</strong> 点击注册并完成账号创建
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h2>导航至API Key管理页面</h2>
+            <div class="step-content">
+                <p>登录成功后，按照以下步骤找到API Key管理页面：</p>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <div>
+                        在左侧导航栏中找到并点击 <strong>"API Keys"</strong> 或 <strong>"API管理"</strong>
+                    </div>
+                </div>
+                
+                <div class="note">
+                    <strong>提示：</strong> 如果您是第一次使用，可能需要先同意开发者协议或完成身份验证。
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <h2>创建新的API Key</h2>
+            <div class="step-content">
+                <p>在API Key管理页面中：</p>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div>
+                        点击 <strong>"创建新的API Key"</strong> 按钮
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div>
+                        根据需要填写API Key的名称（可选）
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        确认创建，系统将生成一个唯一的API Key
+                    </div>
+                </div>
+                
+                <div class="note warning">
+                    <strong>重要：</strong> API Key创建后请立即复制保存，关闭页面后将无法再次查看完整Key。
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">4</div>
+            <h2>复制并保存API Key</h2>
+            <div class="step-content">
+                <p>成功创建API Key后：</p>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-copy"></i>
+                    </div>
+                    <div>
+                        <strong>立即复制</strong> 生成的API Key（点击复制按钮或手动选择复制）
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-save"></i>
+                    </div>
+                    <div>
+                        将复制的API Key <strong>安全保存</strong> 在您信任的地方
+                    </div>
+                </div>
+                
+                <div class="note">
+                    <strong>建议：</strong> 使用密码管理器保存API Key，避免使用明文存储在不安全的地方。
+                </div>
+            </div>
+        </div>
+        
+        <div class="step success">
+            <div class="step-number">5</div>
+            <h2>在平台中使用API Key</h2>
+            <div class="step-content">
+                <p>现在您可以将API Key用于我们的平台：</p>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-paste"></i>
+                    </div>
+                    <div>
+                        返回平台，在 <strong>"Kimi API Key"</strong> 输入框中粘贴您的Key
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        点击保存或确认，即可开始使用Kimi API服务
+                    </div>
+                </div>
+                
+                <div class="note">
+                    <strong>测试：</strong> 保存后可以尝试进行一次查询，确认API Key工作正常。
+                </div>
+                
+                <a href="#" onclick="window.close(); return false;" class="btn">
+                    <i class="fas fa-arrow-left"></i> 返回平台
+                </a>
+            </div>
+        </div>
+        
+        <div class="step">
+            <div class="step-number"><i class="fas fa-question"></i></div>
+            <h2>常见问题</h2>
+            <div class="step-content">
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div>
+                        <strong>API Key泄露了怎么办？</strong><br>
+                        立即返回Kimi开发者平台，删除泄露的Key并创建新的Key。
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <div>
+                        <strong>API Key无效？</strong><br>
+                        检查是否复制了完整Key，确保没有多余空格。如果问题持续，尝试创建新Key。
+                    </div>
+                </div>
+                
+                <div class="action-item">
+                    <div class="action-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div>
+                        <strong>如何保证API Key安全？</strong><br>
+                        不要将Key提交到公开代码库，使用环境变量存储，定期轮换Key。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
