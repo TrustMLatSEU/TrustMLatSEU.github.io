@@ -18,7 +18,7 @@
         </header>
         
         <div class="filter-card">
-            <h2><i class="fas fa-calendar-alt"></i> 选择日期范围</h2>
+            <h2><i class="fas fa-calendar-alt"></i> 选择日期范围 (建议选单日)</h2>
             <div class="date-range-picker">
                 <div class="date-input">
                     <label for="start-date">开始日期</label>
@@ -88,7 +88,7 @@
             
             <div class="prompt-editor">
                 <h2><i class="fas fa-edit"></i> 自定义筛选Prompt</h2>
-                <p>以下Prompt专为TrustML课题组设计，您可以通过修改自定义想要筛选的研究方向：</p>
+                <p>可以通过修改自定义想要筛选的研究方向：</p>
                 <textarea id="custom-prompt" class="prompt-textarea">
 You are an AI research assistant specialized in filtering academic papers for a research team focused on trustworthiness and uncertainty in machine learning systems. 
 
@@ -205,7 +205,7 @@ Return ONLY a valid JSON array where each object contains paperIndex and relevan
     </div>
 
     <footer class="citation">
-        <p>© 2025 TrustML Group at SEU</p>
+        <p>© 2025 TrustML Reading Group at SEU</p>
     </footer>
 
     <script>
@@ -219,7 +219,7 @@ Return ONLY a valid JSON array where each object contains paperIndex and relevan
             // 设置默认日期范围（最近一周）
             const endDate = new Date();
             const startDate = new Date();
-            startDate.setDate(endDate.getDate() -3);
+            startDate.setDate(endDate.getDate() -1);
             
             document.getElementById('start-date').valueAsDate = startDate;
             document.getElementById('end-date').valueAsDate = endDate;
