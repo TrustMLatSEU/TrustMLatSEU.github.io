@@ -751,7 +751,7 @@ ${error.stack || error.message}
                 });
 
                 // API调用
-                const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+                response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -770,7 +770,7 @@ ${error.stack || error.message}
                             }
                         ],
                         temperature: 0.3,
-                        max_tokens: 200000,
+                        max_tokens: 131072,
                         response_format: { type: "json_object" }
                     })
                 });
@@ -784,11 +784,17 @@ ${error.stack || error.message}
                 return data.choices[0].message.content;
                 
             } catch (error) {
+                // 安全地访问 response
+                const responseText = response 
+                    ? await response.text().catch(() => "无法读取响应体") 
+                    : "无响应对象";
+
                 console.error('API调用详细错误:', {
                     error: error.message,
                     stack: error.stack,
-                    response: await response?.text()
+                    response: responseText
                 });
+                
                 throw new Error(`API调用失败: ${error.message}`);
             }
         }
