@@ -66,7 +66,7 @@
                                 <p><strong>Title: <a href="#" id="next-paper-link" target="_blank"><span id="next-title">Loading...</span></a></strong></p>
                                 <p><strong>Conference/Journal:</strong> <span id="next-conference">Loading...</span></p>
                                 <p><strong>Presenter:</strong> <span id="next-presenter">Loading...</span></p>
-                                <p><strong>Location:</strong> Room 413, Computer Science Building, Jiulonghu Campus of Southeast University</p>
+                                <p><strong>Location:</strong> <span id="next-location">Loading...</span>, Computer Science Building, Jiulonghu Campus of Southeast University</p>
                                 <p><strong>Tencent Meeting ID:</strong> <a href="https://meeting.tencent.com/dm/zy7FLyzPJmUT" target="_blank">#522-1446-6679</a> </p>
                         </div>
 
@@ -566,18 +566,35 @@
                 return currentDate > latestDate ? current : latest;
             }, meetings[0]);
             
+            // 检查最晚日期是否早于当前日期
+            const currentDate = new Date();
+            const meetingDate = new Date(nextMeeting.Date);
+            
+            if (meetingDate < currentDate) {
+                // 如果最晚日期早于当前日期，隐藏upcoming presentation模块
+                document.querySelector('.next-meeting-card').style.display = 'none';
+                document.querySelector('h2.section-title').style.display = 'none'; // 隐藏"Upcoming Presentation"标题
+                return;
+            } else {
+                // 确保模块可见
+                document.querySelector('.next-meeting-card').style.display = 'block';
+                document.querySelector('h2.section-title').style.display = 'block';
+            }
+            
             // 更新DOM元素
-            const date = new Date(nextMeeting.Date);
-            const formattedDate = date.toLocaleDateString('zh-CN', {
+            const formattedDate = meetingDate.toLocaleDateString('zh-CN', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
             });
             
-            document.getElementById('next-date').textContent = formattedDate + ' 14:00';
+            document.getElementById('next-date').textContent = formattedDate + '  ' + nextMeeting['Time'];
             document.getElementById('next-presenter').textContent = nextMeeting.Presenter || '';
             document.getElementById('next-title').textContent = nextMeeting.Title || '';
             document.getElementById('next-conference').textContent = nextMeeting.Conference + ' ' + nextMeeting.Year || '';
+            
+            // 新增：动态设置时间和地点
+            document.getElementById('next-location').textContent = nextMeeting.Location || 'Room ' + nextMeeting['Room']; // 默认值
             
             const paperLink = document.getElementById('next-paper-link');
             if (nextMeeting['Paper Link']) {
@@ -585,11 +602,13 @@
             } else {
                 paperLink.style.display = 'none';
             }
+            
             if (nextMeeting) {
                 nextMeetingId = nextMeeting.id || `${nextMeeting.Date}-${nextMeeting.Title}`;
             }
         }
 
+        
         // 刷新缓存和数据的函数
         function refreshCacheAndData() {
             // 清除缓存
