@@ -569,8 +569,7 @@
             // 检查最晚日期是否早于当前日期
             const currentDate = new Date();
             const meetingDate = new Date(nextMeeting.Date);
-            
-            if (meetingDate < currentDate) {
+            if (meetingDate+1 < currentDate) {
                 // 如果最晚日期早于当前日期，隐藏upcoming presentation模块
                 document.querySelector('.next-meeting-card').style.display = 'none';
                 document.querySelector('h2.section-title').style.display = 'none'; // 隐藏"Upcoming Presentation"标题
