@@ -56,12 +56,13 @@
                             <li><a href="https://sc.seu.edu.cn/docs/index.html" target="_blank"> 东南大学大数据计算中心使用手册</a></li>
                             <li><a href="https://docs.google.com/document/d/10WwGb411SLdB4K71jUtA7Rdr94x3v5ZCevhbe07uR9c/edit?usp=drive_link" target="_blank"> V100 GPU服务器使用说明</a></li>
                             <li><a href="arxiv.html" target="_blank"> 最新 arXiv 论文智能推荐</a></li>
+                            <li><a href="http://10.201.25.34" target="_blank"> 课题组自建 <strong style="color:#28a745;font-family:Calibri,sans-serif;">Overleaf</strong> 网站 </a></li>
                         </ul>
                     </div>
                 </aside>
                 
                 <main class="content-area">
-                    <h2 class="section-title">Upcoming Presentation  <span id="next-date">Loading...</span></h2>
+                    <h2 class="section-title">Upcoming Presentation  <span id="next-date">TBD</span></h2>
                         <div class="next-meeting-card">
                                 <p><strong>Title: <a href="#" id="next-paper-link" target="_blank"><span id="next-title">Loading...</span></a></strong></p>
                                 <p><strong>Conference/Journal:</strong> <span id="next-conference">Loading...</span></p>
@@ -569,7 +570,8 @@
             // 检查最晚日期是否早于当前日期
             const currentDate = new Date();
             const meetingDate = new Date(nextMeeting.Date);
-            if (meetingDate+1 < currentDate) {
+
+            if (new Date(meetingDate.getTime() + 24 * 60 * 60 * 1000) < currentDate) {
                 // 如果最晚日期早于当前日期，隐藏upcoming presentation模块
                 document.querySelector('.next-meeting-card').style.display = 'none';
                 document.querySelector('h2.section-title').style.display = 'none'; // 隐藏"Upcoming Presentation"标题
