@@ -52,11 +52,11 @@
                         </div>
                         <h3 class="about-subtitle">Useful Links</h3>
                         <ul class="research-areas">
-                            <li><a href="https://bdcc.seu.edu.cn/4/23/list.html" target="_blank"> 东南大学大数据计算中心用户申请</a></li>
-                            <li><a href="https://sc.seu.edu.cn/docs/index.html" target="_blank"> 东南大学大数据计算中心使用手册</a></li>
-                            <li><a href="https://docs.google.com/document/d/10WwGb411SLdB4K71jUtA7Rdr94x3v5ZCevhbe07uR9c/edit?usp=drive_link" target="_blank"> V100 GPU服务器使用说明</a></li>
-                            <li><a href="arxiv.html" target="_blank"> 最新 arXiv 论文推荐</a></li>
-                            <li><a href="http://10.201.25.34" target="_blank">Our Overleaf Cloud</a></li>
+                            <!--<li><a href="https://bdcc.seu.edu.cn/4/23/list.html" target="_blank"> 东南大学大数据计算中心用户申请</a></li>
+                            <li><a href="https://sc.seu.edu.cn/docs/index.html" target="_blank"> 东南大学大数据计算中心使用手册</a></li>-->
+                            <li><a href="https://docs.google.com/document/d/10WwGb411SLdB4K71jUtA7Rdr94x3v5ZCevhbe07uR9c/edit?usp=drive_link" target="_blank"> GPU 服务器使用</a></li>
+                            <li><a href="arxiv.html" target="_blank"> Latest related arXiv papers</a></li>
+                            <li><a href="http://10.201.25.34" target="_blank">Our overleaf cloud</a></li>
                         </ul>
                     </div>
                 </aside>
@@ -458,9 +458,14 @@
             const sortOption = sortSelect.value;
             
             // Filter meetings
+            // Filter meetings - 只显示当前日期之前的记录，并排除下一次会议
             let filteredByDate = meetings.filter(meeting => {
                 const meetingId = meeting.id || `${meeting.Date}-${meeting.Title}`;
-                return meetingId !== nextMeetingId;
+                const meetingDate = new Date(meeting.Date);
+                const currentDate = new Date();
+                
+                // 排除下一次会议，并且只显示当前日期之前的记录
+                return meetingId !== nextMeetingId && meetingDate < new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
             });
             
             // 第二次过滤：基于搜索条件
@@ -557,59 +562,65 @@
         }
 
         // 添加renderNextMeeting函数
+        // 修改renderNextMeeting函数
         function renderNextMeeting() {
             if (meetings.length === 0) return;
             
-            // 找到日期最晚的会议
-            const nextMeeting = meetings.reduce((latest, current) => {
-                const currentDate = new Date(current.Date);
-                const latestDate = new Date(latest.Date);
-                return currentDate > latestDate ? current : latest;
-            }, meetings[0]);
-            
-            // 检查最晚日期是否早于当前日期
             const currentDate = new Date();
-            const meetingDate = new Date(nextMeeting.Date);
-
-            if (new Date(meetingDate.getTime() + 24 * 60 * 60 * 1000) < currentDate) {
-                // 如果最晚日期早于当前日期，隐藏upcoming presentation模块
+            
+            // 筛选出所有未来的会议（包括今天）
+            const futureMeetings = meetings.filter(meeting => {
+                const meetingDate = new Date(meeting.Date);
+                // 将会议日期设置为当天的开始时间进行比较
+                return meetingDate >= new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+            });
+            
+            if (futureMeetings.length === 0) {
+                // 如果没有未来的会议，隐藏upcoming presentation模块
                 document.querySelector('.next-meeting-card').style.display = 'none';
-                document.querySelector('h2.section-title').style.display = 'none'; // 隐藏"Upcoming Presentation"标题
+                document.querySelector('h2.section-title').style.display = 'none';
                 return;
-            } else {
-                // 确保模块可见
-                document.querySelector('.next-meeting-card').style.display = 'block';
-                document.querySelector('h2.section-title').style.display = 'block';
             }
             
-            // 更新DOM元素
+            // 找到时间最近的未来会议（按日期升序排序，取第一个）
+            const nextMeeting = futureMeetings.sort((a, b) => new Date(a.Date) - new Date(b.Date))[0];
+            
+            // 确保模块可见
+            document.querySelector('.next-meeting-card').style.display = 'block';
+            document.querySelector('h2.section-title').style.display = 'block';
+            
+            // 更新DOM元素，如果某项为空则显示TBD
+            const meetingDate = new Date(nextMeeting.Date);
             const formattedDate = meetingDate.toLocaleDateString('zh-CN', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
             });
             
-            document.getElementById('next-date').textContent = formattedDate + '  ' + nextMeeting['Time'];
-            document.getElementById('next-presenter').textContent = nextMeeting.Presenter || '';
-            document.getElementById('next-title').textContent = nextMeeting.Title || '';
-            document.getElementById('next-conference').textContent = nextMeeting.Conference + ' ' + nextMeeting.Year || '';
+            document.getElementById('next-date').textContent = formattedDate + '  ' + (nextMeeting['Time'] || 'TBD');
+            document.getElementById('next-presenter').textContent = nextMeeting.Presenter || 'TBD';
+            document.getElementById('next-title').textContent = nextMeeting.Title || 'TBD';
+            document.getElementById('next-conference').textContent = (nextMeeting.Conference || 'TBD') + ' ' + (nextMeeting.Year || '');
             
-            // 新增：动态设置时间和地点
-            document.getElementById('next-location').textContent = nextMeeting.Location || 'Room ' + nextMeeting['Room']; // 默认值
+            // 动态设置时间和地点
+            document.getElementById('next-location').textContent = nextMeeting.Location || (nextMeeting['Room'] ? 'Room ' + nextMeeting['Room'] : 'TBD');
             
             const paperLink = document.getElementById('next-paper-link');
             if (nextMeeting['Paper Link']) {
                 paperLink.href = nextMeeting['Paper Link'];
             } else {
-                //paperLink.style.display = 'none';
                 paperLink.href = '#';
+                // 如果论文链接为空，可以添加提示
+                paperLink.onclick = () => {
+                    alert('论文链接暂未提供');
+                    return false;
+                };
             }
             
             if (nextMeeting) {
                 nextMeetingId = nextMeeting.id || `${nextMeeting.Date}-${nextMeeting.Title}`;
             }
         }
-
         
         // 刷新缓存和数据的函数
         function refreshCacheAndData() {
